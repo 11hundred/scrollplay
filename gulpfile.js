@@ -24,11 +24,11 @@ gulp.task('sass', function() {
   return gulp.src('src/style/*.scss')
     .pipe(sass({ outputStyle: 'compressed' }))
     .pipe(autoprefixer({
-      browsers: ['last 10 versions', 'ie 8'],
+      browsers: ['last 10 versions', 'ie 9', 'ie 8'],
       errLogToConsole: true,
       sync: true
     }))
-    .on('error', function(err) { console.log(err.message); })
+    .on('error', function(error) { console.log(error.message); })
     .pipe(gulp.dest('dist/style'))
     .pipe(filter('**/*.css'))
     .pipe(browserSync.reload({
@@ -53,7 +53,7 @@ gulp.task('bs-reload', function() {
 });
 
 gulp.task('default', ['scss-lint', 'sass', 'uglify', 'lint', 'browser-sync'], function() {
-  gulp.watch('src/style/*/**.scss', ['scss-lint', 'sass']);
+  gulp.watch('src/style/**/*.scss', ['scss-lint', 'sass']);
   gulp.watch('src/scripts/*.js', ['lint', 'uglify']);
   gulp.watch('*.html', ['bs-reload']);
 });

@@ -1,0 +1,13 @@
+exclude: [
+  'bower_components/**',
+  'node_modules/**',
+  'src/style/vendor/**'
+]
+
+linters:
+  LeadingZero:
+    enabled: false
+  PropertySortOrder:
+    enabled: false
+  ZeroUnit:
+    enabled: false
