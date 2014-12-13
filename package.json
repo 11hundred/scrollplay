@@ -1,0 +1,26 @@
+{
+  "name": "scrollplay",
+  "version": "1.0.0",
+  "description": "Soundcloud Scroll Player",
+  "authors": [
+    {
+      "name": "Robert Sefer",
+      "email": "rsefer@gmail.com",
+      "homepage": "http://seferdesign.com"
+    },
+    {
+      "name": "David Handschuh",
+      "email": "david@11hundred.com",
+      "homepage": "http://11hundred.com"
+    }
+  ],
+  "devDependencies": {
+    "browser-sync": "^1.7.2",
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^2.0.0",
+    "gulp-filter": "^1.0.2",
+    "gulp-jshint": "^1.9.0",
+    "gulp-sass": "^1.2.4",
+    "gulp-scss-lint": "^0.1.4"
+  }
+}
