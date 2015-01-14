@@ -11,7 +11,7 @@ SC.initialize({
 function setTimeline(data) {
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
 
-  $.get(host + '/tracks/' + trackID + '/comments.format?consumer_key=' + consumerKey, function(data) {
+  $.get(host + '/tracks/' + trackID + '/comments?consumer_key=' + consumerKey, function(data) {
     data.sort(function(a,b) { return parseFloat(a.timestamp) - parseFloat(b.timestamp); } );
     var lastCommentTop = 0;
     var lastHeight;
@@ -32,7 +32,7 @@ function updateProgress() {
   $('.comments-progress').css('top', Math.round(track.position  * magnitude) + 'px');
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 
   SC.whenStreamingReady(function() {
     track = SC.stream('/tracks/' + trackID, {
@@ -43,7 +43,7 @@ $(document).ready(function () {
           updateProgress();
         }
       });
-      $.get(host + '/tracks/' + trackID + '.format?consumer_key=' + consumerKey, function(data) {
+      $.getJSON(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
         setTimeline(data);
       });
     });
