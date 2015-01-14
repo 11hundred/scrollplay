@@ -43,7 +43,7 @@ $(document).ready(function() {
           updateProgress();
         }
       });
-      $.getJSON(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
+      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
         setTimeline(data);
       });
     });
