@@ -51,6 +51,7 @@ $(document).ready(function() {
 
   $('.status-control').click(function() {
     track.togglePause();
+    $(this).toggleClass('playing');
   });
 
   $('.progress-bar').click(function(e) {

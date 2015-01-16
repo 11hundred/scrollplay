@@ -39,7 +39,34 @@ header {
   }
 
   .status-control {
-    left: 0px;
+
+    -webkit-appearance: none;
+    left: 1.5rem;;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    outline: none;
+
+    .fa-pause {
+      display: none;
+    }
+
+    .fa-play {
+      display: block;
+    }
+
+    &.playing {
+
+      .fa-pause {
+        display: block;
+      }
+
+      .fa-play {
+        display: none;
+      }
+
+    }
+
   }
 
   .attribution {
