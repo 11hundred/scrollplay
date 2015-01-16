@@ -52,19 +52,32 @@ header {
 .comments-list {
 
   position: relative;
-  min-height: 500px;
+  min-height: 30rem;
+
+  padding: 0px 1.5rem;
 
   .comments-progress {
+    z-index: 999;
     position: absolute;
     left: 0px;
-    width: 10px;
-    height: 2px;
+    width: 1.5rem;
+    height:1.5rem;
     background: $red;
   }
 
   .comment {
     z-index: 1;
     position: absolute;
+    padding-left: 2.75rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .avatar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 2.25rem;
   }
 
 }
