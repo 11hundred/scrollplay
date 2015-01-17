@@ -2,6 +2,7 @@ var consumerKey = '9994e3c432c77379bee441c98b1a4082';
 var host = 'https://api.soundcloud.com';
 var trackID = 165098282;
 var magnitude = 0.10;
+var container = $('.wrapper');
 var track, SC;
 
 SC.initialize({
@@ -43,9 +44,15 @@ function updateProgress(givenposition) {
   var diffY = progressTop - windowYCenter;
 
   if (Math.abs(diffY) >= 0) {
-    $('html, body').animate({
+    container.animate({
       scrollTop: diffY
     }, 0);
+  }
+}
+
+function setArtwork(data) {
+  if (data.artwork_url) {
+    container.css('background-image', 'url(' + data.artwork_url + ')');
   }
 }
 
@@ -64,6 +71,7 @@ function loadTrack() {
       });
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
         setTimeline(data);
+        setArtwork(data);
       });
     });
   });

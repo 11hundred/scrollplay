@@ -1,10 +1,48 @@
+$black: #000;
+$white: #fff;
 $gray: #cbcbcb;
 $blue: #464ced;
 $red: #f00;
 
 body {
   padding-top: 1rem;
+  font-family: 'Raleway', sans-serif;
   font-size: 16px;
+  font-weight: 500;
+}
+
+a {
+
+  &,
+  &:visited {
+    color: lighten($black, 50);
+  }
+
+}
+
+.wrapper {
+  z-index: 0;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+  background: {
+    size: cover;
+    repeat: no-repeat;
+    position: center center;
+  }
+}
+
+.image-overlay {
+  z-index: 1;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: transparentize($white, 0.25);
 }
 
 header {
@@ -14,6 +52,8 @@ header {
   top: 0px;
   left: 0px;
   right: 0px;
+  height: 2.75rem;
+  background: transparentize($white, .5);
 
   $progress-bar-height: 1rem;
 
@@ -26,7 +66,7 @@ header {
       position: absolute;
       top: 0px;
       left: 0px;
-      height: 100%;
+      height: $progress-bar-height;
       background: $blue;
     }
 
@@ -38,37 +78,6 @@ header {
     top: $progress-bar-height;
   }
 
-  .status-control {
-
-    -webkit-appearance: none;
-    left: 1.5rem;;
-    padding: 0.5rem;
-    background: none;
-    border: none;
-    outline: none;
-
-    .fa-pause {
-      display: none;
-    }
-
-    .fa-play {
-      display: block;
-    }
-
-    &.playing {
-
-      .fa-pause {
-        display: block;
-      }
-
-      .fa-play {
-        display: none;
-      }
-
-    }
-
-  }
-
   .attribution {
     right: 0px;
     padding: 0.25rem;
@@ -76,8 +85,40 @@ header {
 
 }
 
+.status-control {
+
+  -webkit-appearance: none;
+  left: 1.5rem;
+  padding: 0.5rem;
+  background: none;
+  border: 0;
+  outline: none;
+
+  .fa-pause {
+    display: none;
+  }
+
+  .fa-play {
+    display: block;
+  }
+
+  &.playing {
+
+    .fa-pause {
+      display: block;
+    }
+
+    .fa-play {
+      display: none;
+    }
+
+  }
+
+}
+
 .comments-list {
 
+  z-index: 99;
   position: relative;
   min-height: 30rem;
 
@@ -88,7 +129,7 @@ header {
     position: absolute;
     left: 0px;
     width: 1.5rem;
-    height:1.5rem;
+    height: 1.5rem;
     background: $red;
   }
 
