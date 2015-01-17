@@ -27,13 +27,29 @@ function setTimeline(data) {
   });
 }
 
-function updateProgress() {
-  $('.bar-progress').css('width', track.position / track.durationEstimate * 100 + '%');
-  $('.comments-progress').css('top', Math.round(track.position  * magnitude) + 'px');
+function updateProgress(givenposition) {
+  var newposition;
+  if (givenposition >= 0) {
+    newposition = givenposition;
+  } else {
+    newposition = track.position;
+  }
+
+  $('.bar-progress').css('width', newposition / track.durationEstimate * 100 + '%');
+  $('.comments-progress').css('top', Math.round(newposition  * magnitude) + 'px');
+
+  var progressTop = $('.comments-progress').position().top;
+  var windowYCenter = $(window).height() / 2;
+  var diffY = progressTop - windowYCenter;
+
+  if (Math.abs(diffY) >= 0) {
+    $('html, body').animate({
+      scrollTop: diffY
+    }, 0);
+  }
 }
 
-$(document).ready(function() {
-
+function loadTrack() {
   SC.whenStreamingReady(function() {
     track = SC.stream('/tracks/' + trackID, {
       autoPlay: false
@@ -41,6 +57,9 @@ $(document).ready(function() {
       track.play({
         whileplaying: function() {
           updateProgress();
+        },
+        onfinish: function() {
+          $('.status-control').toggleClass('playing');
         }
       });
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
@@ -48,14 +67,25 @@ $(document).ready(function() {
       });
     });
   });
+}
+
+$(document).ready(function() {
+
+  loadTrack();
 
   $('.status-control').click(function() {
-    track.togglePause();
+    if (track.position >= track.duration) {
+      loadTrack();
+    } else {
+      track.togglePause();
+    }
     $(this).toggleClass('playing');
   });
 
   $('.progress-bar').click(function(e) {
-    track.setPosition((e.pageX / $(window).width()) * track.durationEstimate);
+    var newposition = (e.pageX / $(window).width()) * track.durationEstimate;
+    track.setPosition(newposition);
+    updateProgress(newposition);
   });
 
 });
