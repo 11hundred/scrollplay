@@ -10,10 +10,11 @@ SC.initialize({
 });
 
 function setTimeline(data) {
+  console.log('setting timeline...');
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
 
-  $.get(host + '/tracks/' + trackID + '/comments?consumer_key=' + consumerKey, function(data) {
+  $.get(host + '/tracks/' + data.id + '/comments?consumer_key=' + consumerKey, function(data) {
     data.sort(function(a,b) { return parseFloat(a.timestamp) - parseFloat(b.timestamp); } );
     var lastCommentTop = 0;
     var lastHeight;
@@ -57,12 +58,19 @@ function setArtwork(data) {
   }
 }
 
-function loadTrack() {
+function loadTrack(givenTrack) {
+  var workingTrack;
+  if (givenTrack) {
+    workingTrack = givenTrack;
+  } else {
+    workingTrack = trackID;
+  }
+
   SC.whenStreamingReady(function() {
-    track = SC.stream('/tracks/' + trackID, {
+    track = SC.stream('/tracks/' + workingTrack, {
       autoPlay: false
     }, function(track) {
-      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
+      $.get(host + '/tracks/' + workingTrack + '?consumer_key=' + consumerKey, function(data) {
         setArtwork(data);
         setTimeline(data);
       });
@@ -95,6 +103,35 @@ $(document).ready(function() {
     var newposition = (e.pageX / $(window).width()) * track.durationEstimate;
     track.setPosition(newposition);
     updateProgress(newposition);
+  });
+
+  $('#search-input').keypress(function() {
+    var searchQuery = $(this).val();
+    if (searchQuery.length === 0) {
+      $('.search-results').html();
+    } else if (searchQuery.length > 2) {
+      SC.get('/tracks', { q: searchQuery }, function(tracks) {
+        var searchResultsHTML = '';
+        if (tracks.length <= 1) {
+          searchResultsHTML = 'No tracks found.';
+        } else {
+          for (var i = 0; i < 5; i++) {
+            if (tracks[i].streamable === true) {
+              searchResultsHTML += '<div class="search-track" data-trackid="' + tracks[i].id + '">' + tracks[i].title + '</div>';
+            }
+            if (i == tracks.length - 1) {
+              break;
+            }
+          }
+        }
+        $('.search-results').html(searchResultsHTML).promise().done(function() {
+          $('.search-track').click(function() {
+            loadTrack($(this).data('trackid'));
+            $('.status-control').addClass('playing');
+          });
+        });
+      });
+    }
   });
 
 });

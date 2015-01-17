@@ -121,6 +121,34 @@ header {
 
 }
 
+
+.search-wrap {
+
+  z-index: 9999;
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  background: $white;
+
+  .search-results {
+    max-width: 300px;
+  }
+
+  .search-track {
+
+    margin: 0.5rem 0px;
+
+    &:hover {
+      background: $gray;
+      cursor: pointer;
+    }
+
+  }
+
+}
+
 .comments-list {
 
   z-index: 99;
