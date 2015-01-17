@@ -10,6 +10,7 @@ SC.initialize({
 });
 
 function setTimeline(data) {
+  $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
 
   $.get(host + '/tracks/' + trackID + '/comments?consumer_key=' + consumerKey, function(data) {
@@ -61,6 +62,10 @@ function loadTrack() {
     track = SC.stream('/tracks/' + trackID, {
       autoPlay: false
     }, function(track) {
+      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
+        setArtwork(data);
+        setTimeline(data);
+      });
       track.play({
         whileplaying: function() {
           updateProgress();
@@ -68,10 +73,6 @@ function loadTrack() {
         onfinish: function() {
           $('.status-control').toggleClass('playing');
         }
-      });
-      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
-        setTimeline(data);
-        setArtwork(data);
       });
     });
   });

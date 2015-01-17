@@ -53,7 +53,7 @@ header {
   left: 0px;
   right: 0px;
   height: 2.75rem;
-  background: transparentize($white, .5);
+  background: transparentize($white, .1);
 
   $progress-bar-height: 1rem;
 
@@ -73,14 +73,19 @@ header {
   }
 
   .status-control,
-  .attribution {
+  .attribution,
+  .track-title {
     position: absolute;
     top: $progress-bar-height;
+    padding: 0.25rem;
+  }
+
+  .track-title {
+    left: 4rem;
   }
 
   .attribution {
     right: 0px;
-    padding: 0.25rem;
   }
 
 }
@@ -89,7 +94,7 @@ header {
 
   -webkit-appearance: none;
   left: 1.5rem;
-  padding: 0.5rem;
+  margin-top: 0.125rem;
   background: none;
   border: 0;
   outline: none;
