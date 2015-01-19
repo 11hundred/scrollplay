@@ -54,7 +54,9 @@ function updateProgress(givenposition) {
 
 function setArtwork(data) {
   if (data.artwork_url) {
-    container.css('background-image', 'url(' + data.artwork_url + ')');
+    var tempArtwork = data.artwork_url;
+    tempArtwork = tempArtwork.replace('-large.jpg', '-t500x500.jpg');
+    container.css('background-image', 'url(' + tempArtwork + ')');
   }
 }
 
