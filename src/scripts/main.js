@@ -1,6 +1,5 @@
 var consumerKey = '9994e3c432c77379bee441c98b1a4082';
 var host = 'https://api.soundcloud.com';
-var trackID = 90243759;
 var magnitude = 0.10;
 var container = $('.wrapper');
 var track, SC;
@@ -10,7 +9,6 @@ SC.initialize({
 });
 
 function setTimeline(data) {
-  console.log('setting timeline...');
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
 
@@ -60,19 +58,14 @@ function setArtwork(data) {
   }
 }
 
-function loadTrack(givenTrack) {
-  var workingTrack;
-  if (givenTrack) {
-    workingTrack = givenTrack;
-  } else {
-    workingTrack = trackID;
-  }
+function loadTrack(trackID) {
+  $('.progress-bar, .status-control, .comments-progress').removeClass('hide');
 
   SC.whenStreamingReady(function() {
-    track = SC.stream('/tracks/' + workingTrack, {
+    track = SC.stream('/tracks/' + trackID, {
       autoPlay: false
     }, function(track) {
-      $.get(host + '/tracks/' + workingTrack + '?consumer_key=' + consumerKey, function(data) {
+      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
         setArtwork(data);
         setTimeline(data);
       });
@@ -89,8 +82,6 @@ function loadTrack(givenTrack) {
 }
 
 $(document).ready(function() {
-
-  loadTrack();
 
   $('.status-control').click(function() {
     if (track.position >= track.duration) {
@@ -111,6 +102,7 @@ $(document).ready(function() {
     var searchQuery = $(this).val();
     if (searchQuery.length === 0) {
       $('.search-results').html();
+      $('.search-results').removeClass('filled');
     } else if (searchQuery.length > 2) {
       SC.get('/tracks', { q: searchQuery }, function(tracks) {
         var searchResultsHTML = '';
@@ -126,6 +118,7 @@ $(document).ready(function() {
             }
           }
         }
+        $('.search-results').addClass('filled');
         $('.search-results').html(searchResultsHTML).promise().done(function() {
           $('.search-track').click(function() {
             loadTrack($(this).data('trackid'));

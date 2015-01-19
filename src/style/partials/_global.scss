@@ -11,6 +11,10 @@ body {
   font-weight: 500;
 }
 
+.hide {
+  display: none;
+}
+
 a {
 
   &,
@@ -125,15 +129,33 @@ header {
 .search-wrap {
 
   z-index: 9999;
-  position: absolute;
+  position: fixed;
   top: 4rem;
   left: 50%;
   transform: translateX(-50%);
   padding: 1rem;
   background: $white;
+  box-shadow: 0px 0px 0.5rem 0.125rem transparentize($black, 0.75);
+  border-radius: 0.25em;
+
+  input {
+    padding: 0.25rem;
+    font-size: 2rem;
+    text-align: center;
+    border: 0;
+    outline: 0;
+  }
 
   .search-results {
+
+    margin: 0px auto;
     max-width: 300px;
+
+    &.filled {
+      padding-top: .5rem;
+      border-top: 1px solid $black;
+    }
+
   }
 
   .search-track {
