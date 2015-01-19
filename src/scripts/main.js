@@ -105,7 +105,7 @@ $(document).ready(function() {
     updateProgress(newposition);
   });
 
-  $('#search-input').keypress(function() {
+  $('#search-input').bind('propertychange change click keyup input paste', function() {
     var searchQuery = $(this).val();
     if (searchQuery.length === 0) {
       $('.search-results').html();
