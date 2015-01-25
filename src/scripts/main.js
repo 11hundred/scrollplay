@@ -62,6 +62,11 @@ function loadTrack(trackID) {
     client_id: consumerKey
   });
 
+  window.location.hash = trackID;
+  $('.controls').removeClass('hide');
+  $('.search-wrap').toggleClass('hide');
+  $('.status-control').addClass('playing');
+
   $('.track-title, .comments-list').html();
   $('.progress-bar, .status-control, .comments-progress, .search-toggle').removeClass('hide');
 
@@ -86,6 +91,12 @@ function loadTrack(trackID) {
 }
 
 $(document).ready(function() {
+
+  if (window.location.hash) {
+    var thisHash = window.location.hash;
+    thisHash = thisHash.substring(1);
+    loadTrack(thisHash);
+  }
 
   $('.status-control').click(function() {
     if (track.position >= track.duration) {
@@ -133,13 +144,10 @@ $(document).ready(function() {
         $('.search-results').addClass('filled');
         $('.search-results').html(searchResultsHTML).promise().done(function() {
           $('.search-track').click(function() {
-            $('.controls').removeClass('hide');
             if (track) {
               track.destruct();
             }
-            $('.search-wrap').toggleClass('hide');
             loadTrack($(this).data('trackid'));
-            $('.status-control').addClass('playing');
           });
         });
       });
