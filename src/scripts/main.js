@@ -4,14 +4,10 @@ var magnitude = 0.10;
 var container = $('.wrapper');
 var track, SC;
 
-SC.initialize({
-  client_id: consumerKey
-});
-
 function setTimeline(data) {
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
-
+  $('.comments-list .comment').remove();
   $.get(host + '/tracks/' + data.id + '/comments?consumer_key=' + consumerKey, function(data) {
     data.sort(function(a,b) { return parseFloat(a.timestamp) - parseFloat(b.timestamp); } );
     var lastCommentTop = 0;
@@ -59,7 +55,13 @@ function setArtwork(data) {
 }
 
 function loadTrack(trackID) {
-  $('.progress-bar, .status-control, .comments-progress').removeClass('hide');
+
+  SC.initialize({
+    client_id: consumerKey
+  });
+
+  $('.track-title, .comments-list').html();
+  $('.progress-bar, .status-control, .comments-progress, .search-toggle').removeClass('hide');
 
   SC.whenStreamingReady(function() {
     track = SC.stream('/tracks/' + trackID, {
@@ -98,20 +100,28 @@ $(document).ready(function() {
     updateProgress(newposition);
   });
 
+  $('.search-toggle').click(function() {
+    $('.search-wrap').toggleClass('hide');
+  });
+
   $('#search-input').bind('propertychange change click keyup input paste', function() {
     var searchQuery = $(this).val();
     if (searchQuery.length === 0) {
-      $('.search-results').html();
+      $('.search-results').html('');
       $('.search-results').removeClass('filled');
     } else if (searchQuery.length > 2) {
-      SC.get('/tracks', { q: searchQuery }, function(tracks) {
+      SC.get('/tracks?consumer_key=' + consumerKey, { q: searchQuery }, function(tracks) {
         var searchResultsHTML = '';
         if (tracks.length <= 1) {
           searchResultsHTML = 'No tracks found.';
         } else {
           for (var i = 0; i < 5; i++) {
             if (tracks[i].streamable === true) {
-              searchResultsHTML += '<div class="search-track" data-trackid="' + tracks[i].id + '">' + tracks[i].title + '</div>';
+              searchResultsHTML += '<div class="search-track" data-trackid="' + tracks[i].id + '">';
+              if (tracks[i].artwork_url) {
+                searchResultsHTML += '<img src="' + tracks[i].artwork_url + '">';
+              }
+              searchResultsHTML += '<div class="meta"><div class="meta-title">' + tracks[i].title + '</div><div class="meta-artist">by ' + tracks[i].user.username + '</div></div></div>';
             }
             if (i == tracks.length - 1) {
               break;
@@ -121,6 +131,11 @@ $(document).ready(function() {
         $('.search-results').addClass('filled');
         $('.search-results').html(searchResultsHTML).promise().done(function() {
           $('.search-track').click(function() {
+            $('.controls').removeClass('hide');
+            if (track) {
+              track.destruct();
+            }
+            $('.search-wrap').toggleClass('hide');
             loadTrack($(this).data('trackid'));
             $('.status-control').addClass('playing');
           });
