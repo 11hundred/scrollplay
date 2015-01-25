@@ -17,7 +17,9 @@ function setTimeline(data) {
       if (thisTop < lastCommentTop + lastHeight) {
         thisTop = lastCommentTop + lastHeight;
       }
-      $('.comments-list').append('<div id="comment-' + data[i].id + '" class="comment" style="top: ' + thisTop + 'px;"><img class="avatar" src="' + data[i].user.avatar_url + '">' + data[i].user.username + ': ' + data[i].body + '</div>');
+      var userAvatar = data[i].user.avatar_url;
+      userAvatar = userAvatar.replace('-large.jpg', '-badge.jpg');
+      $('.comments-list').append('<div id="comment-' + data[i].id + '" class="comment" style="top: ' + thisTop + 'px;"><img class="avatar" src="' + userAvatar + '">' + data[i].user.username + ': ' + data[i].body + '</div>');
       lastHeight = $('.comments-list .comment').last().outerHeight();
       lastCommentTop = thisTop;
     }
