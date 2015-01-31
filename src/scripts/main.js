@@ -3,6 +3,7 @@ var host = 'https://api.soundcloud.com';
 var magnitude = 0.10;
 var container = $('.wrapper');
 var track, SC;
+var playingElements = $('.progress-bar, .controls, .comments-progress');
 
 function setTimeline(data) {
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
@@ -63,12 +64,11 @@ function loadTrack(trackID) {
   });
 
   window.location.hash = trackID;
-  $('.controls').removeClass('hide');
   $('.search-wrap').toggleClass('hide');
   $('.status-control').addClass('playing');
 
   $('.track-title, .comments-list').html();
-  $('.progress-bar, .status-control, .comments-progress, .search-toggle').removeClass('hide');
+  playingElements.removeClass('hide');
 
   SC.whenStreamingReady(function() {
     track = SC.stream('/tracks/' + trackID, {
@@ -77,14 +77,18 @@ function loadTrack(trackID) {
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
         setArtwork(data);
         setTimeline(data);
-      });
-      track.play({
-        whileplaying: function() {
-          updateProgress();
-        },
-        onfinish: function() {
-          $('.status-control').toggleClass('playing');
-        }
+        track.play({
+          whileplaying: function() {
+            updateProgress();
+          },
+          onfinish: function() {
+            $('.status-control').toggleClass('playing');
+          }
+        });
+      }).fail(function() {
+        playingElements.addClass('hide');
+        $('.search-toggle').trigger('click');
+        $('.search-results').addClass('filled').html('Track not found. Search again.');
       });
     });
   });
@@ -115,6 +119,7 @@ $(document).ready(function() {
 
   $('.search-toggle').click(function() {
     $('.search-wrap').toggleClass('hide');
+    $('#search-input').focus();
   });
 
   $('#search-input').bind('propertychange change click keyup input paste', function() {
@@ -144,6 +149,7 @@ $(document).ready(function() {
         $('.search-results').addClass('filled');
         $('.search-results').html(searchResultsHTML).promise().done(function() {
           $('.search-track').click(function() {
+            console.log('click');
             if (track) {
               track.destruct();
             }
