@@ -59,11 +59,14 @@ function setArtwork(data) {
 
 function loadTrack(trackID) {
 
+  if (track) {
+    track.destruct();
+  }
+
   SC.initialize({
     client_id: consumerKey
   });
 
-  window.location.hash = trackID;
   $('.search-wrap').toggleClass('hide');
   $('.status-control').addClass('playing');
 
@@ -75,6 +78,7 @@ function loadTrack(trackID) {
       autoPlay: false
     }, function(track) {
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
+        history.replaceState({ id: trackID }, '', '/#/' + data.id + '/' + data.permalink);
         setArtwork(data);
         setTimeline(data);
         track.play({
@@ -94,12 +98,20 @@ function loadTrack(trackID) {
   });
 }
 
+function loadTrackFromURL(url) {
+  var regexTrack = new RegExp('(#)\/([0-9]+)');
+  if (regexTrack.exec(url)) {
+    loadTrack(regexTrack.exec(url)[2]);
+    return true;
+  } else {
+    return false;
+  }
+}
+
 $(document).ready(function() {
 
   if (window.location.hash) {
-    var thisHash = window.location.hash;
-    thisHash = thisHash.substring(1);
-    loadTrack(thisHash);
+    loadTrackFromURL(window.location.hash);
   }
 
   $('.status-control').click(function() {
@@ -149,10 +161,6 @@ $(document).ready(function() {
         $('.search-results').addClass('filled');
         $('.search-results').html(searchResultsHTML).promise().done(function() {
           $('.search-track').click(function() {
-            console.log('click');
-            if (track) {
-              track.destruct();
-            }
             loadTrack($(this).data('trackid'));
           });
         });
@@ -160,4 +168,11 @@ $(document).ready(function() {
     }
   });
 
+});
+
+$(window).on('popstate', function(e) {
+  if (e.originalEvent.state !== null) {
+    loadTrackFromURL(window.location.hash);
+    $('.search-wrap').addClass('hide');
+  }
 });
