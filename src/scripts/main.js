@@ -57,7 +57,7 @@ function setArtwork(data) {
   }
 }
 
-function loadTrack(trackID) {
+function loadTrack(trackID, isHistory) {
 
   if (track) {
     track.destruct();
@@ -78,7 +78,10 @@ function loadTrack(trackID) {
       autoPlay: false
     }, function(track) {
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
-        history.replaceState({ id: trackID }, '', '/#/' + data.id + '/' + data.permalink);
+        if (!isHistory) {
+          history.pushState('', 'New ID: ' + data.id, '/#/' + data.id + '/' + data.permalink);
+        }
+        document.title = data.title + ' | ScrollPlay';
         setArtwork(data);
         setTimeline(data);
         track.play({
@@ -98,10 +101,10 @@ function loadTrack(trackID) {
   });
 }
 
-function loadTrackFromURL(url) {
+function loadTrackFromURL(url, isHistory) {
   var regexTrack = new RegExp('(#)\/([0-9]+)');
   if (regexTrack.exec(url)) {
-    loadTrack(regexTrack.exec(url)[2]);
+    loadTrack(regexTrack.exec(url)[2], isHistory);
     return true;
   } else {
     return false;
@@ -171,8 +174,6 @@ $(document).ready(function() {
 });
 
 $(window).on('popstate', function(e) {
-  if (e.originalEvent.state !== null) {
-    loadTrackFromURL(window.location.hash);
-    $('.search-wrap').addClass('hide');
-  }
+  loadTrackFromURL(window.location.hash, true);
+  $('.search-wrap').addClass('hide');
 });
