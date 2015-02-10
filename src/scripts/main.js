@@ -49,6 +49,11 @@ function updateProgress(givenposition) {
   }
 }
 
+function setPosition(newposition) {
+  track.setPosition(newposition);
+  updateProgress(newposition);
+}
+
 function setArtwork(data) {
   if (data.artwork_url) {
     var tempArtwork = data.artwork_url;
@@ -127,9 +132,7 @@ $(document).ready(function() {
   });
 
   $('.progress-bar').click(function(e) {
-    var newposition = (e.pageX / $(window).width()) * track.durationEstimate;
-    track.setPosition(newposition);
-    updateProgress(newposition);
+    setPosition((e.pageX / $(window).width()) * track.durationEstimate);
   });
 
   $('.search-toggle').click(function() {
@@ -176,4 +179,13 @@ $(document).ready(function() {
 $(window).on('popstate', function(e) {
   loadTrackFromURL(window.location.hash, true);
   $('.search-wrap').addClass('hide');
+});
+
+$('body').on('DOMMouseScroll mousewheel', function(e) {
+  if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
+    setPosition(track.position + 100);
+  } else {
+    setPosition(track.position - 100);
+  }
+  return false;
 });
