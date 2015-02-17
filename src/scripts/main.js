@@ -64,6 +64,8 @@ function setArtwork(data) {
 
 function loadTrack(trackID, isHistory) {
 
+  $('body').addClass('track-selected');
+
   if (track) {
     track.destruct();
   }
@@ -114,6 +116,11 @@ function loadTrackFromURL(url, isHistory) {
   } else {
     return false;
   }
+}
+
+function audioScratch() {
+  var scratchPlay = $('audio#player-scratch')[0];
+  scratchPlay.play();
 }
 
 $(document).ready(function() {
@@ -182,10 +189,13 @@ $(window).on('popstate', function(e) {
 });
 
 $('body').on('DOMMouseScroll mousewheel', function(e) {
-  if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
-    setPosition(track.position + 100);
-  } else {
-    setPosition(track.position - 100);
+  if ($('body').hasClass('track-selected')) {
+    audioScratch();
+    if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
+      setPosition(track.position + 100);
+    } else {
+      setPosition(track.position - 100);
+    }
   }
   return false;
 });
