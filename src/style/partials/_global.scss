@@ -24,28 +24,33 @@ a {
 
 }
 
-.wrapper {
-  z-index: 0;
+.wrapper,
+.image-bg-wrap,
+.image-overlay {
   position: fixed;
   top: 0px;
   bottom: 0px;
   left: 0px;
   right: 0px;
+}
+
+.wrapper {
+  z-index: 0;
   overflow: hidden;
+}
+
+.image-bg-wrap {
+  z-index: 1;
   background: {
     size: cover;
     repeat: no-repeat;
     position: center center;
   }
+  filter: blur(0.75rem);
 }
 
 .image-overlay {
-  z-index: 1;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
+  z-index: 2;
   background: transparentize($white, 0.25);
 }
 
