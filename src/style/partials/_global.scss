@@ -60,16 +60,21 @@ header {
   position: fixed;
   top: 0px;
   left: 0px;
-  right: 0px;
-  height: 2.75rem;
+  width: 400px;
+  height: 30px;
   background: transparentize($white, .1);
+  transition: height 500ms;
 
-  $progress-bar-height: 1rem;
+  $progress-bar-height: 2px;
 
   .progress-bar {
 
+    position: absolute;
+    top: 29px;
+    width: 100%;
     height: $progress-bar-height;
     background: $gray;
+    transition: height 500ms;
 
     .bar-progress {
       position: absolute;
@@ -77,24 +82,38 @@ header {
       left: 0px;
       height: $progress-bar-height;
       background: $blue;
+      transition: height 500ms;
+    }
+
+  }
+
+  &:hover {
+
+    height: 2.75rem;
+
+    $progress-bar-hover-height: 1rem;
+
+    .progress-bar {
+      height: $progress-bar-hover-height;
+    }
+
+    .bar-progress {
+      height: $progress-bar-hover-height;
     }
 
   }
 
   .controls,
-  .attribution,
   .track-title {
     position: absolute;
-    top: $progress-bar-height;
+    top: 0px;
     padding: 0.25rem;
   }
 
   .track-title {
     left: 6rem;
-  }
-
-  .attribution {
-    right: 0px;
+    height: 1rem;
+    overflow: hidden;
   }
 
 }
