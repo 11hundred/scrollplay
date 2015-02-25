@@ -15,20 +15,24 @@
   <div class="image-overlay"></div>
 
   <header>
-    <div class="progress-bar hide">
-      <div class="bar-progress"></div>
+    <div class="header-wrap">
+      <div class="header-top-row">
+        <div class="controls hide">
+          <div class="search-toggle"><i class="fa fa-fw fa-search"></i></div>
+          <button class="status-control"><i class="fa fa-fw fa-play"></i><i class="fa fa-fw fa-pause"></i></button>
+        </div>
+        <div class="track-title"></div>
+        <i class="fa fa-arrows"></i>
+      </div>
+      <div class="search-wrap">
+        <input id="search-input" type="text" placeholder="Search" autofocus>
+        <div class="search-results"></div>
+      </div>
+      <div class="progress-bar hide">
+        <div class="bar-progress"></div>
+      </div>
     </div>
-    <div class="controls hide">
-      <div class="search-toggle"><i class="fa fa-fw fa-search"></i></div>
-      <button class="status-control"><i class="fa fa-fw fa-play"></i><i class="fa fa-fw fa-pause"></i></button>
-    </div>
-    <div class="track-title"></div>
   </header>
-
-  <div class="search-wrap">
-    <input id="search-input" type="text" placeholder="Search" autofocus>
-    <div class="search-results"></div>
-  </div>
 
   <div class="comments-list">
     <div class="comments-progress hide"></div>

@@ -62,16 +62,13 @@ header {
   left: 0px;
   width: 400px;
   height: 30px;
-  background: transparentize($white, .1);
   transition: height 500ms;
 
   $progress-bar-height: 2px;
 
   .progress-bar {
 
-    position: absolute;
-    top: 29px;
-    width: 100%;
+    position: relative;
     height: $progress-bar-height;
     background: $gray;
     transition: height 500ms;
@@ -103,26 +100,45 @@ header {
 
   }
 
+  .header-wrap {
+    position: relative;
+  }
+
+  .header-top-row {
+    background: transparentize($white, .1);
+  }
+
   .controls,
-  .track-title {
+  .track-title,
+  .fa-arrows {
+    vertical-align: top;
+    display: inline-block;
+    padding: 0.25rem;
+    line-height: 2;
+  }
+
+  .fa-arrows {
+
     position: absolute;
     top: 0px;
-    padding: 0.25rem;
+    right: 0.25rem;
+    line-height: 2;
+
+    &:hover {
+      cursor: pointer;
+    }
+    
   }
 
   .track-title {
-    left: 6rem;
-    height: 1rem;
+    width: 300px;
+    height: 2rem;
     overflow: hidden;
   }
 
 }
 
 .controls {
-
-  left: 1.5rem;
-  margin-top: 0.125rem;
-  width: 4rem;
 
   .search-toggle,
   .status-control {
@@ -131,7 +147,6 @@ header {
   }
 
   .search-toggle {
-    vertical-align: top;
     cursor: pointer;
   }
 
@@ -168,15 +183,9 @@ header {
 
 .search-wrap {
 
-  z-index: 9999;
-  position: fixed;
-  top: 4rem;
-  left: 50%;
-  transform: translateX(-50%);
   padding: 1rem;
   background: $white;
-  box-shadow: 0px 0px 0.5rem 0.125rem transparentize($black, 0.75);
-  border-radius: 0.25em;
+  border-radius: 0px;
 
   input {
     padding: 0.25rem;
