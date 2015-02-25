@@ -174,6 +174,69 @@ $(document).ready(function() {
     }
   });
 
+  $.fn.drags = function(opt) {
+  	opt = $.extend({
+  		handle: '',
+  		cursor: 'move'
+  	}, opt);
+
+    var $el;
+
+  	if (opt.handle === '') {
+      $el = this;
+  	} else {
+      $el = this.find(opt.handle);
+  	}
+
+  	return $el.css('cursor', opt.cursor).on('mousedown', function(e) {
+      var $drag;
+  		if (opt.handle === '') {
+        $drag = $(this).addClass('draggable');
+  		} else {
+        $drag = $(this).addClass('active-handle').parent().addClass('draggable');
+  		}
+  		var z_idx = $drag.css('z-index'),
+  			drg_h = $drag.outerHeight(),
+  			drg_w = $drag.outerWidth(),
+  			pos_y = $drag.offset().top + drg_h - e.pageY,
+  			pos_x = $drag.offset().left + drg_w - e.pageX;
+  		$drag.css('z-index', 1000).parents().on('mousemove', function(e) {
+        var finalX;
+        var finalY;
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        if (e.pageX + pos_x > windowWidth) {
+          finalX = windowWidth - drg_w;
+        } else if ($drag.position().left < 0) {
+          finalX = 0;
+        } else {
+          finalX = e.pageX + pos_x - drg_w;
+        }
+        if ($drag.position().top < 0) {
+          finalY = 0;
+        } else {
+          finalY = e.pageY + pos_y - drg_h;
+        }
+  			$('.draggable').offset({
+  				top: finalY,
+  				left: finalX
+  			}).on('mouseup', function() {
+  				$(this).removeClass('draggable').css('z-index', z_idx);
+  			});
+  		});
+  		e.preventDefault();
+  	}).on('mouseup', function() {
+  		if (opt.handle === '') {
+  			$(this).removeClass('draggable');
+  		} else {
+  			$(this).removeClass('active-handle').parent().removeClass('draggable');
+  		}
+  	});
+
+  };
+
+  $('header').drags();
+
 });
 
 $(window).on('popstate', function(e) {
