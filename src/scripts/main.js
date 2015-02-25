@@ -97,6 +97,7 @@ function loadTrack(trackID, isHistory) {
             $('.status-control').toggleClass('playing');
           }
         });
+        $('.header-top-row').removeClass('collapsed');
       }).fail(function() {
         playingElements.addClass('hide');
         $('.search-toggle').trigger('click');

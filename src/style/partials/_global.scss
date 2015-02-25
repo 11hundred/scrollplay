@@ -4,6 +4,8 @@ $gray: #cbcbcb;
 $blue: #464ced;
 $red: #f00;
 
+$search-back: transparentize($white, .1);
+
 body {
   padding-top: 1rem;
   font-family: 'Raleway', sans-serif;
@@ -105,7 +107,21 @@ header {
   }
 
   .header-top-row {
-    background: transparentize($white, .1);
+
+    margin-top: 0px;
+    background: $search-back;
+    transition: margin-top 500ms;
+
+    &.collapsed {
+
+      margin-top: -2rem;
+
+      .drag-anchor {
+        display: none;
+      }
+
+    }
+
   }
 
   .controls,
@@ -184,11 +200,12 @@ header {
 .search-wrap {
 
   padding: 1rem;
-  background: $white;
+  background: $search-back;
   border-radius: 0px;
 
   input {
     padding: 0.25rem;
+    background: none;
     font-size: 2rem;
     text-align: center;
     border: 0;
