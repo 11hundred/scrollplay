@@ -83,6 +83,7 @@ function loadTrack(trackID, isHistory) {
       autoPlay: false
     }, function(track) {
       $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
+        $('body').addClass('trackloaded');
         if (!isHistory) {
           history.pushState('', 'New ID: ' + data.id, '/#/' + data.id + '/' + data.permalink);
         }
@@ -246,10 +247,12 @@ $(window).on('popstate', function(e) {
 });
 
 $('body').on('DOMMouseScroll mousewheel', function(e) {
-  if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
-    setPosition(track.position + 100);
-  } else {
-    setPosition(track.position - 100);
+  if ($('body').hasClass('trackloaded')) {
+    if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
+      setPosition(track.position + 100);
+    } else {
+      setPosition(track.position - 100);
+    }
   }
   return false;
 });
