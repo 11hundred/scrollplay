@@ -280,6 +280,7 @@ header {
     width: 0.75rem;
     height: 2rem;
     transform: translate(0px, 50%);
+    transition: top 50ms ease;
     background: $white;
     border-radius: 1rem;
   }
