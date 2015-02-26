@@ -35,18 +35,14 @@ function updateProgress(givenposition) {
     newposition = track.position;
   }
 
-  $('.bar-progress').css('width', newposition / track.durationEstimate * 100 + '%');
-  $('.comments-progress').css('top', Math.round(newposition  * magnitude) + 'px');
+  var percentComplete = newposition / track.durationEstimate;
 
-  var progressTop = $('.comments-progress').position().top;
-  var windowYCenter = $(window).height() / 2;
-  var diffY = progressTop - windowYCenter;
+  $('.bar-progress').css('width', percentComplete * 100 + '%');
+  $('.comments-progress').css('top', Math.round(percentComplete * $(window).height()) + 'px');
 
-  if (Math.abs(diffY) >= 0) {
-    container.animate({
-      scrollTop: diffY
-    }, 0);
-  }
+  container.animate({
+    scrollTop: percentComplete * $('.comments-list').outerHeight()
+  }, 0);
 }
 
 function setPosition(newposition) {
