@@ -5,7 +5,8 @@ var gulp          = require('gulp'),
     jshint        = require('gulp-jshint'),
     uglify        = require('gulp-uglify'),
     filter        = require('gulp-filter'),
-    browserSync   = require('browser-sync');
+    browserSync   = require('browser-sync'),
+    sourcemaps    = require('gulp-sourcemaps');
 
 gulp.task('browser-sync', function() {
   browserSync({
@@ -45,7 +46,9 @@ gulp.task('lint', function() {
 
 gulp.task('uglify', function() {
   return gulp.src('src/scripts/*.js')
+    .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist/scripts'));
 });
 
