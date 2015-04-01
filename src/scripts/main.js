@@ -129,6 +129,10 @@ $(document).ready(function() {
     $(this).toggleClass('playing');
   });
 
+  $('.comments-toggle').click(function() {
+    $('body').toggleClass('comments-shown');
+  });
+
   $('.progress-bar').click(function(e) {
     setPosition((e.pageX / $(window).width()) * track.durationEstimate);
   });

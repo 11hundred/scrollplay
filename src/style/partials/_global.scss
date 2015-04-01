@@ -144,8 +144,30 @@ header {
 
   }
 
+  .comments-toggle {
+
+    cursor: pointer;
+
+    .fa-comment {
+      display: none;
+    }
+
+    .comments-shown & {
+
+      .fa-comment {
+        display: inline-block;
+      }
+
+      .fa-comment-o {
+        display: none;
+      }
+
+    }
+
+  }
+
   .track-title {
-    width: 300px;
+    width: 270px;
     height: 2rem;
     overflow: hidden;
   }
@@ -155,7 +177,8 @@ header {
 .controls {
 
   .search-toggle,
-  .status-control {
+  .status-control,
+  .comments-toggle {
     display: inline-block;
     vertical-align: middle;
   }
@@ -166,12 +189,14 @@ header {
 
 }
 
-.status-control {
-
+button {
   -webkit-appearance: none;
   background: none;
   border: 0;
   outline: none;
+}
+
+.status-control {
 
   .fa-pause {
     display: none;
@@ -268,10 +293,15 @@ header {
 
 .comments-list {
 
+  visibility: hidden;
   z-index: 99;
   position: relative;
   min-height: 30rem;
   padding: 0px 1.5rem;
+
+  .comments-shown & {
+    visibility: visible;
+  }
 
   .comments-progress {
     z-index: 999;
