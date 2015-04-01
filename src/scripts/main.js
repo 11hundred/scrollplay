@@ -1,4 +1,5 @@
 var consumerKey = '9994e3c432c77379bee441c98b1a4082';
+var lastFMAPIKey = '70eb62503565b422507f84fbf689cb18';
 var host = 'https://api.soundcloud.com';
 var magnitude = 0.10;
 var container = $('.wrapper');
@@ -6,6 +7,7 @@ var track, SC;
 var playingElements = $('.progress-bar, .controls, .comments-progress');
 
 function setTimeline(data) {
+  lastFMArtistSearch(data.user.username);
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
   $('.comments-list .comment').remove();
@@ -112,6 +114,37 @@ function loadTrackFromURL(url, isHistory) {
   } else {
     return false;
   }
+}
+
+function lastFMArtistSearch(username) {
+  $.ajax({
+    dataType: 'json',
+    url: 'http://ws.audioscrobbler.com/2.0/?method=artist.search&api_key=' + lastFMAPIKey + '&format=json&limit=1&artist=' + username
+  }).done(function(data) {
+    getArtistEvents(data.results.artistmatches.artist.name);
+  });
+}
+
+function getArtistEvents(lastFMArtistName) {
+  $.ajax({
+    dataType: 'json',
+    url: 'http://ws.audioscrobbler.com/2.0/?method=artist.getevents&api_key=' + lastFMAPIKey + '&format=json&limit=3&autocorrect=1&artist=' + encodeURI(lastFMArtistName)
+  }).done(function(data) {
+    if (data.events.event && data.events.event.length > 0) {
+      $('.events-list').addClass('show');
+      var tempItems = '';
+      for (var i = 0; i < data.events.event.length; i++) {
+        tempItems += '<li>';
+          tempItems += '<a href="' + data.events.event[i].url + '">';
+          tempItems += data.events.event[i].venue.location.city + ', ' + data.events.event[i].venue.location.country + ' - ' + data.events.event[i].startDate;
+          tempItems += '</a>';
+        tempItems += '</li>';
+      }
+      $('.events-list ul').empty().append(tempItems);
+    } else {
+      $('.events-list').removeClass('show').find('ul').empty();
+    }
+  });
 }
 
 $(document).ready(function() {

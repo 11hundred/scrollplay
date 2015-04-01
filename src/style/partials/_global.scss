@@ -331,3 +331,18 @@ button {
   }
 
 }
+
+.events-list {
+
+  display: none;
+  z-index: 999;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  &.show {
+    display: block;
+  }
+
+}
