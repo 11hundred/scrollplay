@@ -122,7 +122,9 @@ function lastFMArtistSearch(username) {
     dataType: 'json',
     url: 'http://ws.audioscrobbler.com/2.0/?method=artist.search&api_key=' + lastFMAPIKey + '&format=json&limit=1&artist=' + username
   }).done(function(data) {
-    getArtistEvents(data.results.artistmatches.artist.name);
+    if (data.results.artistmatches.artist) {
+      getArtistEvents(data.results.artistmatches.artist.name);
+    }
   });
 }
 
@@ -236,6 +238,7 @@ $(document).ready(function() {
 
   	return $el.css('cursor', opt.cursor).on('mousedown', function(e) {
       var $drag;
+      $(this).addClass('hasDragged');
   		if (opt.handle === '') {
         $drag = $(this).addClass('draggable');
   		} else {
