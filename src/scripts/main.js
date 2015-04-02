@@ -142,7 +142,12 @@ function getArtistEvents(lastFMArtistName) {
             tempItems += '<span class="fa-stack"><span class="fa-stack-1x date-text">' + tempDate.getDate() + '</span><i class="fa fa-calendar-o fa-stack-2x"></i></span>';
             tempItems += '<div class="month-title">' + monthNames[tempDate.getMonth()] + '</div>';
           tempItems += '</div>';
-          tempItems += '<div class="event-location">' + data.events.event[i].venue.location.city + ', ' + data.events.event[i].venue.location.country + '</div>';
+          tempItems += '<div class="event-location">';
+            if (data.events.event[i].title != lastFMArtistName) {
+              tempItems += data.events.event[i].title + ' - ';
+            }
+            tempItems += data.events.event[i].venue.location.city + ', ' + data.events.event[i].venue.location.country;
+          tempItems += '</div>';
           tempItems += '</a>';
         tempItems += '</li>';
       }
