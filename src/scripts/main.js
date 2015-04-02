@@ -5,6 +5,7 @@ var magnitude = 0.10;
 var container = $('.wrapper');
 var track, SC;
 var playingElements = $('.progress-bar, .controls, .comments-progress');
+var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Augt', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function setTimeline(data) {
   lastFMArtistSearch(data.user.username);
@@ -134,9 +135,14 @@ function getArtistEvents(lastFMArtistName) {
       $('.events-list').addClass('show');
       var tempItems = '';
       for (var i = 0; i < data.events.event.length; i++) {
+        var tempDate = new Date(data.events.event[i].startDate);
         tempItems += '<li>';
-          tempItems += '<a href="' + data.events.event[i].url + '">';
-          tempItems += data.events.event[i].venue.location.city + ', ' + data.events.event[i].venue.location.country + ' - ' + data.events.event[i].startDate;
+          tempItems += '<a class="event-link" href="' + data.events.event[i].url + '">';
+          tempItems += '<div class="cal-icon-wrap">';
+            tempItems += '<span class="fa-stack"><span class="fa-stack-1x date-text">' + tempDate.getDate() + '</span><i class="fa fa-calendar-o fa-stack-2x"></i></span>';
+            tempItems += '<div class="month-title">' + monthNames[tempDate.getMonth()] + '</div>';
+          tempItems += '</div>';
+          tempItems += '<div class="event-location">' + data.events.event[i].venue.location.city + ', ' + data.events.event[i].venue.location.country + '</div>';
           tempItems += '</a>';
         tempItems += '</li>';
       }

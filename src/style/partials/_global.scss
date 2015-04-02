@@ -340,9 +340,48 @@ button {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  padding: 2rem;
+
+  ul {
+
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+
+    li {
+      margin: 0.5rem 0px;
+    }
+
+  }
 
   &.show {
     display: block;
+  }
+
+  .event-link {
+    display: block;
+  }
+
+  .fa-stack-1x { top: .25em; }
+
+  .cal-icon-wrap,
+  .event-location {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .cal-icon-wrap {
+    margin-right: 1rem;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .month-title {
+    text-transform: uppercase;
+  }
+
+  .event-location {
+    font-size: 1.5rem;
   }
 
 }
