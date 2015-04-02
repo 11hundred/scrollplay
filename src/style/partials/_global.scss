@@ -363,7 +363,9 @@ button {
     color: $black;
   }
 
-  .fa-stack-1x { top: .25em; }
+  .fa-stack-1x {
+    top: 0.2em;
+  }
 
   .cal-icon-wrap,
   .event-location {
@@ -378,6 +380,7 @@ button {
   }
 
   .month-title {
+    margin-top: 0.25em;
     text-transform: uppercase;
   }
 
