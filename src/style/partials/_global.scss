@@ -121,11 +121,13 @@ header {
     transition: margin-top 500ms;
 
     &.collapsed {
-      margin-top: -2rem;
-    }
 
-    &.collapsed.drag-anchor {
-      display: none;
+      margin-top: -2rem;
+
+      &.drag-anchor {
+        display: none;
+      }
+
     }
 
   }
