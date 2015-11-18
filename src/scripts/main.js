@@ -1,18 +1,19 @@
-var consumerKey = '9994e3c432c77379bee441c98b1a4082';
+var client_id = '9994e3c432c77379bee441c98b1a4082';
 var lastFMAPIKey = '70eb62503565b422507f84fbf689cb18';
 var host = 'https://api.soundcloud.com';
 var magnitude = 0.10;
 var container = $('.wrapper');
 var track, SC;
+var activeTrackDuration = 0;
 var playingElements = $('.progress-bar, .controls, .comments-progress');
 var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Augt', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function setTimeline(data) {
-  lastFMArtistSearch(data.user.username);
+  //lastFMArtistSearch(data.user.username);
   $('.track-title').html(data.user.username + ' &mdash; "' + data.title + '"');
   $('.comments-list').css('height', Math.round(data.duration * magnitude));
   $('.comments-list .comment').remove();
-  $.get(host + '/tracks/' + data.id + '/comments?consumer_key=' + consumerKey, function(data) {
+  $.get(host + '/tracks/' + data.id + '/comments?client_id=' + client_id, function(data) {
     data.sort(function(a,b) { return parseFloat(a.timestamp) - parseFloat(b.timestamp); } );
     var lastCommentTop = 0;
     var lastHeight;
@@ -31,14 +32,15 @@ function setTimeline(data) {
 }
 
 function updateProgress(givenposition) {
+
   var newposition;
   if (givenposition >= 0) {
     newposition = givenposition;
   } else {
-    newposition = track.position;
+    newposition = track.currentTime();
   }
 
-  var percentComplete = newposition / track.durationEstimate;
+  var percentComplete = newposition / activeTrackDuration;
 
   $('.bar-progress').css('width', percentComplete * 100 + '%');
   $('.comments-progress').css('top', Math.round(percentComplete * $(window).height()) + 'px');
@@ -49,7 +51,7 @@ function updateProgress(givenposition) {
 }
 
 function setPosition(newposition) {
-  track.setPosition(newposition);
+  track.seek(newposition);
   updateProgress(newposition);
 }
 
@@ -63,13 +65,9 @@ function setArtwork(data) {
 
 function loadTrack(trackID, isHistory) {
 
-  if (track) {
+  /*if (track) {
     track.destruct();
-  }
-
-  SC.initialize({
-    client_id: consumerKey
-  });
+  }*/
 
   $('.search-wrap').toggleClass('hide');
   $('.status-control').addClass('playing');
@@ -77,32 +75,30 @@ function loadTrack(trackID, isHistory) {
   $('.track-title, .comments-list').html();
   playingElements.removeClass('hide');
 
-  SC.whenStreamingReady(function() {
-    track = SC.stream('/tracks/' + trackID, {
-      autoPlay: false
-    }, function(track) {
-      $.get(host + '/tracks/' + trackID + '?consumer_key=' + consumerKey, function(data) {
-        $('body').addClass('trackloaded');
-        if (!isHistory) {
-          history.pushState('', 'New ID: ' + data.id, '/#/' + data.id + '/' + data.permalink);
-        }
-        document.title = data.title + ' | ScrollPlay';
-        setArtwork(data);
-        setTimeline(data);
-        track.play({
-          whileplaying: function() {
-            updateProgress();
-          },
-          onfinish: function() {
-            $('.status-control').toggleClass('playing');
-          }
-        });
-        $('.header-top-row').removeClass('collapsed');
-      }).fail(function() {
-        playingElements.addClass('hide');
-        $('.search-toggle').trigger('click');
-        $('.search-results').addClass('filled').html('Track not found. Search again.');
+  SC.stream('/tracks/' + trackID).then(function(player) {
+
+    track = player;
+    $.get(host + '/tracks/' + trackID + '?client_id=' + client_id, function(data) {
+      $('body').addClass('trackloaded');
+      if (!isHistory) {
+        history.pushState('', 'New ID: ' + data.id, '/#/' + data.id + '/' + data.permalink);
+      }
+      document.title = data.title + ' | ScrollPlay';
+      setArtwork(data);
+      setTimeline(data);
+      activeTrackDuration = data.duration;
+      player.play();
+      player.on('time', function() {
+        updateProgress();
       });
+      player.on('finish', function() {
+        $('.status-control').toggleClass('playing');
+      });
+      $('.header-top-row').removeClass('collapsed');
+    }).fail(function(error) {
+      playingElements.addClass('hide');
+      $('.search-toggle').trigger('click');
+      $('.search-results').addClass('filled').html('Track not found. Search again.');
     });
   });
 }
@@ -162,15 +158,22 @@ function getArtistEvents(lastFMArtistName) {
 
 $(document).ready(function() {
 
+  SC.initialize({
+    client_id: client_id,
+    redirect_uri: 'http://scrollplay.co'
+  });
+
   if (window.location.hash) {
     loadTrackFromURL(window.location.hash);
   }
 
   $('.status-control').click(function() {
-    if (track.position >= track.duration) {
+    if (track.currentTime() >= activeTrackDuration) {
       loadTrack();
+    } else if ($(this).hasClass('playing')) {
+      track.pause();
     } else {
-      track.togglePause();
+      track.play();
     }
     $(this).toggleClass('playing');
   });
@@ -180,7 +183,7 @@ $(document).ready(function() {
   });
 
   $('.progress-bar').click(function(e) {
-    setPosition((e.pageX / $(window).width()) * track.durationEstimate);
+    setPosition((e.pageX / $(window).width()) * activeTrackDuration);
   });
 
   $('.search-toggle').click(function() {
@@ -194,7 +197,9 @@ $(document).ready(function() {
       $('.search-results').html('');
       $('.search-results').removeClass('filled');
     } else if (searchQuery.length > 2) {
-      SC.get('/tracks?consumer_key=' + consumerKey, { q: searchQuery }, function(tracks) {
+      SC.get('/tracks', {
+        q: searchQuery
+      }).then(function(tracks) {
         var searchResultsHTML = '';
         if (tracks.length <= 1) {
           searchResultsHTML = 'No tracks found.';
@@ -218,6 +223,8 @@ $(document).ready(function() {
             loadTrack($(this).data('trackid'));
           });
         });
+      }).catch(function(error) {
+        console.log('Error: ' + error.message);
       });
     }
   });
@@ -296,9 +303,9 @@ $(window).on('popstate', function(e) {
 $('body').on('DOMMouseScroll mousewheel', function(e) {
   if ($('body').hasClass('trackloaded')) {
     if (e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0) {
-      setPosition(track.position + 100);
+      setPosition(track.currentTime() + 100);
     } else {
-      setPosition(track.position - 100);
+      setPosition(track.currentTime() - 100);
     }
   }
   return false;
